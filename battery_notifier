@@ -12,8 +12,8 @@ puts "Sending Battery level information"
 # Check if the battery level is below a certain threshold
 if battery_level.to_i < 20
     # Your Account Sid and Auth Token from twilio.com/console
-    account_sid = 'ACba9b12e043d8510246229c956fd52601'
-    auth_token = 'f939690f834e2b6a50a9d0d1edfb5774'
+    account_sid = 'YOUR SID'
+    auth_token = 'YOUR AUTH TOKEN'
     @client = Twilio::REST::Client.new(account_sid, auth_token)
 
     message = @client.messages.create(
@@ -27,8 +27,8 @@ if battery_level.to_i < 20
 
 elsif battery_level.to_i >= 92
     # Your Account Sid and Auth Token from twilio.com/console
-    account_sid = 'ACba9b12e043d8510246229c956fd52601'
-    auth_token = 'f939690f834e2b6a50a9d0d1edfb5774'
+    account_sid = 'YOUR SID'
+    auth_token = 'YOUR AUTH TOKEN'
     @client = Twilio::REST::Client.new(account_sid, auth_token)
 
     message = @client.messages.create(
