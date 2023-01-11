@@ -1,0 +1,48 @@
+require 'rubygems'
+require 'twilio-ruby'
+
+puts "Checking Battery levels ... "
+
+# Get the current battery level
+battery_level = `cat /sys/class/power_supply/BAT1/capacity`.strip
+
+puts battery_level
+puts "Sending Battery level information"
+
+# Check if the battery level is below a certain threshold
+if battery_level.to_i < 20
+    # Your Account Sid and Auth Token from twilio.com/console
+    account_sid = 'ACba9b12e043d8510246229c956fd52601'
+    auth_token = 'f939690f834e2b6a50a9d0d1edfb5774'
+    @client = Twilio::REST::Client.new(account_sid, auth_token)
+
+    message = @client.messages.create(
+        body: "BlackAdder needs recharging.",
+        from: '+17206648131',
+        to: '4084294177'
+    )
+ 
+  puts message.sid
+  puts "Successfully sent message: BlackAdder needs recharging."
+
+elsif battery_level.to_i >= 92
+    # Your Account Sid and Auth Token from twilio.com/console
+    account_sid = 'ACba9b12e043d8510246229c956fd52601'
+    auth_token = 'f939690f834e2b6a50a9d0d1edfb5774'
+    @client = Twilio::REST::Client.new(account_sid, auth_token)
+
+    message = @client.messages.create(
+        body: "BlackAdder battery is full.",
+        from: '+17206648131',
+        to: '4084294177'
+    )
+
+  puts message.sid
+  puts "Successfully sent message: BlackAdder battery is full."
+
+else
+	puts "The Battery level is middling, no notification necessary."
+
+
+end
+ 
