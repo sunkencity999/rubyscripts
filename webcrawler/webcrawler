@@ -1,0 +1,104 @@
+require 'open-uri'
+require 'nokogiri'
+require 'date'
+require 'net/http'
+require 'thor'
+require 'ruby-progressbar'
+
+class WebsiteCrawler < Thor
+
+  desc "crawl URL", "Crawls the website and saves the text to a file"
+
+  def crawl(url, limit=5)
+    @visited_links = Set.new
+    links_crawled = 0
+    @text = ""
+    pbar = ProgressBar.create(:total => limit)
+
+    if url.empty? || (!url.start_with?("http") && !url.start_with?("https"))
+      say("Invalid URL provided")
+      return
+    end
+
+    @visited_links.add(url)
+
+    begin
+      html = Net::HTTP.get(URI(url))
+    rescue OpenURI::HTTPError => e
+      return
+    end
+
+    doc = Nokogiri::HTML(html)
+    @text << doc.css("body").text
+
+    links = doc.css("a").map { |link| link["href"] }
+    total_links = links.size
+
+    links.each do |link|
+      next unless link.end_with?('.html') || link.end_with?('.com')
+      if links_crawled >= limit
+        break
+      end
+
+      if @visited_links.include?(link)
+        next
+      end
+
+      if link.start_with?("http") || link.start_with?("https")
+        next unless link.end_with?('.html') || link.end_with?('.com')
+
+        @visited_links.add(link)
+        begin
+          html = Net::HTTP.get(URI(link))
+
+        rescue OpenURI::HTTPError => e
+          next
+        end
+        doc = Nokogiri::HTML(html)
+        @text << doc.text
+        links_crawled += 1
+        pbar.increment
+        crawl(link, limit)
+      else
+        link = URI.join(url, link).to_s
+        @visited_links.add(link)
+        begin
+         #html = open(link)
+          html = Net::HTTP.get(URI(link))
+        rescue OpenURI::HTTPError => e
+          next
+        end
+        doc = Nokogiri::HTML(html)
+        @text << doc.text
+        links_crawled += 1
+        pbar.increment
+        crawl(link, limit)
+      end
+    end
+    pbar.finish
+    date = DateTime.now.strftime("%Y-%m-%d")
+    website_name = url.gsub(/https?:\/\/(www\.)?|(\.com).*/, "")
+    output_file = "#{website_name}-#{date}.txt"
+    # specify the path of the folder where you want to save the file
+    folder_path = "/home/sunkencity999/scripts/crawledSiteData"
+
+    # check if the folder exists
+    unless Dir.exist?(folder_path)
+        # create the folder
+        Dir.mkdir(folder_path)
+    end
+
+    # join the folder_path and file name
+    output_file = File.join(folder_path, output_file)
+
+    # write the text to a file
+    File.write(output_file, @text)
+
+    # show the path of the file
+    say("File saved to #{output_file}")
+    say("Crawled #{links_crawled} out of #{total_links} links")
+  end
+end
+
+WebsiteCrawler.start(ARGV)
+

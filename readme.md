@@ -1,9 +1,37 @@
-#Hello
-This is a repository of useful scripts for folks who live in the command line and are looking to put therepersonal maching to novel use. So often we use a machine -- in this case our local linux computer -- in simple ways proscribed by the manufacturer. They are capable of much, much more. My goal is to identify small life issues/problems, and write simple scripts that integrate with the functionality of my machine that make life easier or more interesting. 
+#Website Crawler
+This script is a command-line utility for crawling a given website and saving its text content to a file on your system. It can also follow and crawl links within the website, and limit the number of links followed and crawled.
 
-If you find them useful, please put them to work. I would appreciate if you would leave my comments with attibution intact. 
+##Usage
+To use the script, run the following command:
+
+$ ruby webcrawler.rb crawl [URL] [OPTIONS]
+Where [URL] is the website you want to crawl and [OPTIONS] are optional arguments.
+
+Options
+-l, --limit [LIMIT]: The maximum number of links to follow and crawl (default: 10)
+###Features
+-Crawl a website and save its text content to a file
+-Follow and crawl links within the website
+-Limit the number of links followed and crawled
+-Extract text content within the <body> tag of the documents
+-Keep track of visited links and avoid duplicate crawling
+-Print the number of links present and the number of links crawled
+-Progress bar for monitoring the crawling process
+-file name of the saved text content contains website name and date
 
 
-As the repository grows, this file will be more carefully edited to make it navigable. I'm going to do 0 troubleshooting for folks' indidvidual systems and implementations. If you don't find scripting and problem-solving enjoyable, you're probably better off just hitting up an app store to cobble up similar functionality in your daily life. Probably works better, anyway. 
+##Dependencies
+-Nokogiri
+-Thor
+-Ruby-progressbar
+-Net::HTTP
+-Open-uri
+-Date
+-Note
 
-Christopher Bradford
+It is important to note that crawling a website without permission from the website's owner may be a violation of the website's terms of service. Please make sure that you have the necessary permissions before using this script.
+
+###Contribution
+Feel free to contribute to this script by submitting pull requests with new features or bug fixes.
+
+###Created by Christopher Bradford | theroyalart@gmail.com
